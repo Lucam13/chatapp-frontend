@@ -25,6 +25,13 @@ const useListenMessages = () => {
             message,
           })
         );
+      } else {
+        dispatch(
+          newMessage({
+            conversationId: message.areaId,
+            message,
+          })
+        );
       }
     });
     return () => {
