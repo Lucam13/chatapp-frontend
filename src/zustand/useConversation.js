@@ -1,5 +1,7 @@
 import { create } from "zustand";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 const useConversation = create((set) => ({
   selectedConversation: null,
   setSelectedConversation: (selectedConversation) =>
@@ -10,7 +12,10 @@ const useConversation = create((set) => ({
   // This will fetch messages and populate them with sender info
   fetchAndSetMessages: async (conversationId) => {
     try {
-      const res = await fetch(`/api/messages/${conversationId}`);
+      const res = await fetch(`${BACKEND_URL}/api/messages/${conversationId}`, {
+        method: "GET",
+        credentials: "include",
+      });
       const messages = await res.json();
       set({ messages });
     } catch (error) {

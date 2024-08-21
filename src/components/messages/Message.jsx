@@ -2,6 +2,8 @@ import { useAuthContext } from "../../context/AuthContext";
 import { extractTime } from "../../utils/extractTime";
 import useConversation from "../../zustand/useConversation";
 import useUsers from "../../hooks/useGetUsers";
+import { useDispatch } from "react-redux";
+import { removeShake } from "../../redux/actions/actions";
 
 const Message = ({ message }) => {
 	const { authUser } = useAuthContext();
@@ -14,6 +16,19 @@ const Message = ({ message }) => {
 	const bubbleBgColor = fromMe ? "bg-orange-300" : "bg-green-500";
 	const shakeClass = message.shouldShake ? "shake" : "";
 	const senderName = message.senderId.fullName;
+
+	const dispatch = useDispatch();
+
+	if (message.shouldShake) {
+		setTimeout(() => {
+			dispatch(
+				removeShake({
+					conversationId: selectedConversation._id,
+					messageId: message._id,
+				})
+			);
+		}, 1000);
+	}
 
 	return (
 		<div className={`chat ${chatClassName}`}>
