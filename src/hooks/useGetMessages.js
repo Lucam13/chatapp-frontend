@@ -3,11 +3,13 @@ import useConversation from "../zustand/useConversation";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { getMessages } from "../redux/actions/actions";
+import { useAuthContext } from "../context/AuthContext";
 
 const useGetMessages = () => {
   const [loading, setLoading] = useState(false);
   const { selectedConversation } = useConversation();
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  const { authUser } = useAuthContext();
 
   const dispatch = useDispatch();
   const messages = useSelector((state) => state.messages);
@@ -22,6 +24,9 @@ const useGetMessages = () => {
           {
             method: "GET",
             credentials: "include",
+            headers: {
+              Authorization: `Bearer ${authUser.token}`,
+            },
           }
         );
         const data = await res.json();
@@ -45,7 +50,6 @@ const useGetMessages = () => {
           (conversation) => conversation._id === selectedConversation._id
         )?.messagesLoaded === false
       ) {
-        console.log("fetching messages");
         fetchMessages();
       } else {
         dispatch(
