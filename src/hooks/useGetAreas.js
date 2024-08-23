@@ -20,9 +20,7 @@ const useGetAreas = () => {
         const response = await fetch(`${BACKEND_URL}/api/areas`, {
           method: "GET",
           credentials: "include",
-          headers: {
-            Authorization: `Bearer ${authUser.token}`,
-          },
+        
         });
         const data = await response.json();
         if (data.error) throw new Error(data.error);
