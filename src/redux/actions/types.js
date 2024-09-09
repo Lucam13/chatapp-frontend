@@ -4,3 +4,4 @@ export const GET_MESSAGES = "GET_MESSAGES";
 export const GET_USERS = "GET_USERS";
 export const NEW_MESSAGE = "NEW_MESSAGE";
 export const REMOVE_SHAKE = "REMOVE_SHAKE";
+export const SELECT_CONVERSATION = "SELECT_CONVERSATION";

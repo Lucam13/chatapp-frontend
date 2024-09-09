@@ -5,6 +5,7 @@ import {
   GET_USERS,
   NEW_MESSAGE,
   REMOVE_SHAKE,
+  SELECT_CONVERSATION,
 } from "./types";
 
 export const getConversations = (conversations) => (dispatch) => {
@@ -46,5 +47,12 @@ export const removeShake = (message) => (dispatch) => {
   dispatch({
     type: REMOVE_SHAKE,
     payload: message,
+  });
+};
+
+export const selectConversation = (conversationId) => (dispatch) => {
+  dispatch({
+    type: SELECT_CONVERSATION,
+    payload: { conversationId },
   });
 };
