@@ -140,7 +140,7 @@ const SignUp = () => {
               {loading ? (
                 <span className="loading loading-spinner"></span>
               ) : (
-                "Sign Up"
+                "Registrarse  "
               )}
             </button>
           </div>
