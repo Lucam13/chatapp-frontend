@@ -10,7 +10,7 @@ const Sidebar = () => {
 
   return (
     <div className="border-r border-orange-500 p-4 flex flex-col">
-      <img className="ml-36 h-16 w-16" src="../../public/logoEpar.png"></img>
+      <img className="ml-36 h-16 w-16" src="logoEpar.png" alt="e.p.a.r" ></img>
       <div className="divider px-3"></div>
       <Conversations showAllAreas={authUser?.areaId === ADMIN_AREA_ID} />
       <LogoutButton />
