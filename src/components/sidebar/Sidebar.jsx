@@ -7,10 +7,10 @@ const ADMIN_AREA_ID = "66b4e3b660fac24724430546";
 
 const Sidebar = () => {
   const { authUser } = useAuthContext();
-  console.log("Usuario", authUser)
+
   return (
     <div className="border-r border-orange-500 p-4 flex flex-col">
-      <SearchInput />
+      <img className="ml-36 h-16 w-16" src="../../public/logoEpar.png"></img>
       <div className="divider px-3"></div>
       <Conversations showAllAreas={authUser?.areaId === ADMIN_AREA_ID} />
       <LogoutButton />

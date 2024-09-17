@@ -1,12 +1,19 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useConversation from "../../zustand/useConversation";
 import MessageInput from "./MessageInput";
 import Messages from "./Messages";
 import { TiMessages } from "react-icons/ti";
 import { useAuthContext } from "../../context/AuthContext";
+import SearchMessages from "./SearchBar.jsx";
 
 const MessageContainer = () => {
   const { selectedConversation, setSelectedConversation } = useConversation();
+  const [filteredMessages, setFilteredMessages] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearch = (term) => {
+    setSearchTerm(term)
+  }
 
   useEffect(() => {
     // cleanup function (unmounts)
@@ -20,13 +27,14 @@ const MessageContainer = () => {
       ) : (
         <>
           {/* Header */}
-          <div className="bg-orange-300 px-4 py-2 mb-2">
+          <div className="bg-orange-300 px-4 py-2 mb-2 flex justify-between items-center">
             <span className="label-text text-white">Para:</span>{" "}
             <span className="text-white font-bold">
               {selectedConversation.name}
             </span>
+            <SearchMessages onSearch={handleSearch} />
           </div>
-          <Messages />
+          <Messages searchTerm={searchTerm}/>
           <MessageInput />
         </>
       )}
