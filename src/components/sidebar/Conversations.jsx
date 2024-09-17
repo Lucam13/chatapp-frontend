@@ -10,8 +10,6 @@ const Conversations = ({ showAllAreas }) => {
     : conversations.filter(
         (conversation) => conversation.name !== "ADMINISTRACIÓN"
       );
-
-      console.log("Conversations filtradas:", filteredConversations);
       
   return (
     <div className="py-2 flex flex-col overflow-auto">
