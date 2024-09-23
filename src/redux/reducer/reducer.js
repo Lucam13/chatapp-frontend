@@ -5,6 +5,8 @@ import {
   GET_USERS,
   NEW_MESSAGE,
   REMOVE_SHAKE,
+  NEW_UNREAD_MESSAGE,
+  REMOVE_UNREAD_MESSAGE
 } from "../actions/types";
 
 const initialState = {
@@ -15,6 +17,7 @@ const initialState = {
   fetchedAreas: false,
   fetchedConversations: false,
   fetchedUsers: false,
+  unReadMessages: {}
 };
 
 const reducer = (state = initialState, action) => {
@@ -37,10 +40,10 @@ const reducer = (state = initialState, action) => {
         conversations: state.conversations.map((conversation) =>
           conversation._id === action.payload.conversationId
             ? {
-                ...conversation,
-                messagesLoaded: true,
-                messages: action.payload.messages,
-              }
+              ...conversation,
+              messagesLoaded: true,
+              messages: action.payload.messages,
+            }
             : conversation
         ),
         messages: action.payload.messages,
@@ -61,6 +64,22 @@ const reducer = (state = initialState, action) => {
         }),
         messages: [...state.messages, action.payload.message],
       };
+    case NEW_UNREAD_MESSAGE:
+      return {
+        ...state,
+        unReadMessages: {
+          ...state.unReadMessages,
+          [action.payload]:
+            (state.unReadMessages[action.payload] || 0) + 1,
+        }
+      }
+    case "REMOVE_UNREAD_MESSAGE":
+      const { [action.payload]: _, ...rest } = state.unReadMessages; // Elimina el área seleccionada
+      return {
+        ...state,
+        unReadMessages: rest,
+      };
+
     case REMOVE_SHAKE:
       return {
         ...state,

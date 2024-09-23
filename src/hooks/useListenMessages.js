@@ -44,6 +44,10 @@ const useListenMessages = () => {
             border: '8px solid #65a30d',
           },
         });
+        dispatch({
+          type: "NEW_UNREAD_MESSAGE",
+          payload: message.areaId,
+        });
 
         dispatch(
           newMessage({
