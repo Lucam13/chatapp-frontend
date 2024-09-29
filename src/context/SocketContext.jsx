@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import { useAuthContext } from "./AuthContext";
 import io from "socket.io-client";
-import useConversation from "../zustand/useConversation";
+import useArea from "../zustand/useArea"; // Cambiado de useConversation a useArea
 
 const SocketContext = createContext();
 
@@ -13,13 +13,13 @@ export const SocketContextProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const { authUser } = useAuthContext();
-  const { selectedConversation } = useConversation();
+  const { selectedArea } = useArea(); // Cambiado de selectedConversation a selectedArea
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     if (authUser) {
       const socket = io(BACKEND_URL, {
-        query: { userId: authUser._id, areaId: selectedConversation?._id },
+        query: { userId: authUser._id, areaId: selectedArea?._id }, // Cambiado de conversationId a areaId
       });
 
       setSocket(socket);
@@ -36,7 +36,7 @@ export const SocketContextProvider = ({ children }) => {
         setSocket(null);
       }
     }
-  }, [authUser, selectedConversation]);
+  }, [authUser, selectedArea]); // Cambiado de selectedConversation a selectedArea
 
   return (
     <SocketContext.Provider value={{ socket, onlineUsers }}>

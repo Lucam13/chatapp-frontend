@@ -27,7 +27,7 @@ const Messages = ({ searchTerm }) => {
   return (
     <div className="px-4 flex-1 overflow-auto">
       {!loading &&
-        filteredMessages.length > 0 &&
+        filteredMessages?.length > 0 &&
         filteredMessages.map((message, index) => (
           <div key={message._id || index} ref={lastMessageRef}>
             <Message message={message} />
@@ -35,7 +35,7 @@ const Messages = ({ searchTerm }) => {
         ))}
 
       {loading && [...Array(3)].map((_, idx) => <MessageSkeleton key={idx} />)}
-      {!loading && filteredMessages.length === 0 && (
+      {!loading && filteredMessages?.length === 0 && (
         <p className="text-center">
           {searchTerm
             ? "No se encontraron mensajes que coincidan con la búsqueda."

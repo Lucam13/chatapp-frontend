@@ -1,5 +1,5 @@
 import { useState } from "react";
-import useConversation from "../zustand/useConversation";
+import useArea from "../zustand/useArea"; // Cambiado de useConversation a useArea
 import toast from "react-hot-toast";
 import { useSocketContext } from "../context/SocketContext";
 import { useAuthContext } from "../context/AuthContext";
@@ -8,7 +8,7 @@ import { newMessage } from "../redux/actions/actions";
 
 const useSendMessage = () => {
   const [loading, setLoading] = useState(false);
-  const { selectedConversation } = useConversation();
+  const { selectedArea } = useArea(); // Cambiado de selectedConversation a selectedArea
   const { socket } = useSocketContext();
   const { authUser } = useAuthContext();
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -28,7 +28,7 @@ const useSendMessage = () => {
     setLoading(true);
     try {
       const res = await fetch(
-        `${BACKEND_URL}/api/messages/send/${selectedConversation._id}`,
+        `${BACKEND_URL}/api/messages/send/${selectedArea._id}`, // Cambiado de selectedConversation a selectedArea
         {
           method: "POST",
           credentials: "include",
@@ -45,7 +45,7 @@ const useSendMessage = () => {
       // Emit the message to the server
       emitMessageToArea({
         message: data.message,
-        areaId: selectedConversation._id,
+        areaId: selectedArea._id, // Cambiado de selectedConversation a selectedArea
         senderId: {
           _id: authUser._id,
           fullName: authUser.fullName,
@@ -56,7 +56,7 @@ const useSendMessage = () => {
 
       dispatch(
         newMessage({
-          conversationId: selectedConversation._id,
+          areaId: selectedArea._id, // Cambiado de conversationId a areaId
           message: {
             ...data,
             senderId: {
@@ -77,4 +77,5 @@ const useSendMessage = () => {
 
   return { sendMessage, loading };
 };
+
 export default useSendMessage;
