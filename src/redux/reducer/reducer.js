@@ -5,7 +5,7 @@ import {
   NEW_MESSAGE,
   REMOVE_SHAKE,
   NEW_UNREAD_MESSAGE,
-  REMOVE_UNREAD_MESSAGE
+  REMOVE_UNREAD_MESSAGE,
 } from "../actions/types";
 
 const initialState = {
@@ -14,18 +14,25 @@ const initialState = {
   users: [],
   fetchedAreas: false,
   fetchedUsers: false,
-  unReadMessages: {}
+  unReadMessages: {},
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_AREAS:
-      return { ...state, areas: action.payload, fetchedAreas: true };
+      return {
+        ...state,
+        areas: action.payload.map((area) => ({
+          ...area,
+          messages: [], 
+        })),
+        fetchedAreas: true,
+      };
     case GET_MESSAGES:
       return {
         ...state,
         areas: state.areas.map((area) =>
-          area._id === action.payload.areaId // Cambiado de conversationId a areaId
+          area._id === action.payload.areaId
             ? {
                 ...area,
                 messagesLoaded: true,
@@ -41,10 +48,12 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         areas: state.areas.map((area) => {
-          if (area._id === action.payload.areaId) { // Cambiado de conversationId a areaId
+          if (area._id === action.payload.areaId) {
             return {
               ...area,
-              messages: [...area.messages, action.payload.message],
+              messages: Array.isArray(area.messages)
+                ? [...area.messages, action.payload.message]
+                : [action.payload.message], // Asegúrate de que sea un array
             };
           }
           return area;
@@ -56,9 +65,8 @@ const reducer = (state = initialState, action) => {
         ...state,
         unReadMessages: {
           ...state.unReadMessages,
-          [action.payload]:
-            (state.unReadMessages[action.payload] || 0) + 1,
-        }
+          [action.payload]: (state.unReadMessages[action.payload] || 0) + 1,
+        },
       };
     case "REMOVE_UNREAD_MESSAGE":
       const { [action.payload]: _, ...rest } = state.unReadMessages; // Elimina el área seleccionada
@@ -70,14 +78,16 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         areas: state.areas.map((area) => {
-          if (area._id === action.payload.areaId) { // Cambiado de conversationId a areaId
+          if (area._id === action.payload.areaId) {
             return {
               ...area,
-              messages: area.messages.map((message) =>
-                message._id === action.payload.messageId
-                  ? { ...message, shouldShake: false }
-                  : message
-              ),
+              messages: Array.isArray(area.messages)
+                ? area.messages.map((message) =>
+                    message._id === action.payload.messageId
+                      ? { ...message, shouldShake: false }
+                      : message
+                  )
+                : [], // Si no es un array, retornar un array vacío
             };
           }
           return area;

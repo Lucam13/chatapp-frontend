@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 const Messages = ({ searchTerm }) => {
   const { loading } = useGetMessages();
   const messages = useSelector((state) => state.messages);
+  console.log("messages", messages);
   useListenMessages();
   const lastMessageRef = useRef();
 

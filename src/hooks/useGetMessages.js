@@ -17,6 +17,7 @@ const useGetMessages = () => {
 
   useEffect(() => {
     const fetchMessages = async () => {
+
       setLoading(true);
       try {
         const res = await fetch(
@@ -30,7 +31,17 @@ const useGetMessages = () => {
           }
         );
         const data = await res.json();
+        console.log("data", data);
+        let arr = []
+        data.forEach((message) => {
+          if (message.receiverId === selectedArea._id) {
+            arr.push(message)
+          }
+        })
+        console.log("mensajes filtrados", arr)  
+        
         if (data.error) throw new Error(data.error);
+        console.log("data", data);
         dispatch(
           getMessages({
             areaId: selectedArea._id, // Cambiado de conversationId a areaId
@@ -43,13 +54,17 @@ const useGetMessages = () => {
         setLoading(false);
       }
     };
-
+    console.log("selectedArea", selectedArea);
+    console.log("ACAAAAAAAAA",areas?.find((area) => area._id === selectedArea._id).messagesLoaded)
     if (selectedArea?._id) { // Cambiado de selectedConversation a selectedArea
+      const area = areas?.find((area) => area._id === selectedArea._id)
       if (
-        areas?.find((area) => area._id === selectedArea._id)?.messagesLoaded === false // Cambiado de conversation a area
+        area?.messagesLoaded == false || area?.messagesLoaded == undefined // Cambiado de conversation a area
       ) {
+        console.log("fetching messages");
         fetchMessages();
       } else {
+        console.log("messages already loaded");
         dispatch(
           getMessages({
             areaId: selectedArea._id, // Cambiado de conversationId a areaId
