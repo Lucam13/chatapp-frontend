@@ -1,50 +1,44 @@
 import {
   GET_AREAS,
-  GET_CONVERSATIONS,
   GET_MESSAGES,
   GET_USERS,
   NEW_MESSAGE,
   REMOVE_SHAKE,
   NEW_UNREAD_MESSAGE,
-  REMOVE_UNREAD_MESSAGE
+  REMOVE_UNREAD_MESSAGE,
 } from "../actions/types";
 
 const initialState = {
   areas: [],
-  conversations: [],
   messages: [],
   users: [],
   fetchedAreas: false,
-  fetchedConversations: false,
   fetchedUsers: false,
-  unReadMessages: {}
+  unReadMessages: {},
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_AREAS:
-      return { ...state, areas: action.payload, fetchedAreas: true };
-    case GET_CONVERSATIONS:
       return {
         ...state,
-        conversations: action.payload.map((conversation) => ({
-          ...conversation,
-          messagesLoaded: false,
-          messages: [],
+        areas: action.payload.map((area) => ({
+          ...area,
+          messages: [], 
         })),
-        fetchedConversations: true,
+        fetchedAreas: true,
       };
     case GET_MESSAGES:
       return {
         ...state,
-        conversations: state.conversations.map((conversation) =>
-          conversation._id === action.payload.conversationId
+        areas: state.areas.map((area) =>
+          area._id === action.payload.areaId
             ? {
-              ...conversation,
-              messagesLoaded: true,
-              messages: action.payload.messages,
-            }
-            : conversation
+                ...area,
+                messagesLoaded: true,
+                messages: action.payload.messages,
+              }
+            : area
         ),
         messages: action.payload.messages,
       };
@@ -53,14 +47,16 @@ const reducer = (state = initialState, action) => {
     case NEW_MESSAGE:
       return {
         ...state,
-        conversations: state.conversations.map((conversation) => {
-          if (conversation._id === action.payload.conversationId) {
+        areas: state.areas.map((area) => {
+          if (area._id === action.payload.areaId) {
             return {
-              ...conversation,
-              messages: [...conversation.messages, action.payload.message],
+              ...area,
+              messages: Array.isArray(area.messages)
+                ? [...area.messages, action.payload.message]
+                : [action.payload.message], // Asegúrate de que sea un array
             };
           }
-          return conversation;
+          return area;
         }),
         messages: [...state.messages, action.payload.message],
       };
@@ -69,32 +65,32 @@ const reducer = (state = initialState, action) => {
         ...state,
         unReadMessages: {
           ...state.unReadMessages,
-          [action.payload]:
-            (state.unReadMessages[action.payload] || 0) + 1,
-        }
-      }
+          [action.payload]: (state.unReadMessages[action.payload] || 0) + 1,
+        },
+      };
     case "REMOVE_UNREAD_MESSAGE":
       const { [action.payload]: _, ...rest } = state.unReadMessages; // Elimina el área seleccionada
       return {
         ...state,
         unReadMessages: rest,
       };
-
     case REMOVE_SHAKE:
       return {
         ...state,
-        conversations: state.conversations.map((conversation) => {
-          if (conversation._id === action.payload.conversationId) {
+        areas: state.areas.map((area) => {
+          if (area._id === action.payload.areaId) {
             return {
-              ...conversation,
-              messages: conversation.messages.map((message) =>
-                message._id === action.payload.messageId
-                  ? { ...message, shouldShake: false }
-                  : message
-              ),
+              ...area,
+              messages: Array.isArray(area.messages)
+                ? area.messages.map((message) =>
+                    message._id === action.payload.messageId
+                      ? { ...message, shouldShake: false }
+                      : message
+                  )
+                : [], // Si no es un array, retornar un array vacío
             };
           }
-          return conversation;
+          return area;
         }),
         messages: state.messages.map((message) =>
           message._id === action.payload.messageId
