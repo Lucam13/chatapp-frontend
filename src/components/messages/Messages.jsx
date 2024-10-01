@@ -12,12 +12,17 @@ const Messages = ({ searchTerm }) => {
   useListenMessages();
   const lastMessageRef = useRef();
 
+  // Ordenar los mensajes por fecha de creación (createdAt)
+  const sortedMessages = [...messages].sort(
+    (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+  );
+
   // Filtrar los mensajes según el término de búsqueda
   const filteredMessages = searchTerm
-    ? messages.filter((message) =>
+    ? sortedMessages.filter((message) =>
         message.message.toLowerCase().includes(searchTerm.toLowerCase())
       )
-    : messages;
+    : sortedMessages;
 
   useEffect(() => {
     setTimeout(() => {
